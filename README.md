@@ -35,8 +35,8 @@ Data Layer (Snowflake) 💾 ⟷ Backend / API (FastAPI) 🧠 ⟷ Frontend (Strea
 ### Installation
 
 ```bash
-git clone [YOUR REPO URL]
-cd [YOUR PROJECT FOLDER]
+git clone https://github.com/Alex-maker-code/covid-analytics-platform
+cd covid-analytics-platform
 
 python -m venv .venv
 # macOS/Linux
