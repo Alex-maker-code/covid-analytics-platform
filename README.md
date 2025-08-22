@@ -1,144 +1,107 @@
-Comprehensive COVID-19 Analytics Platform
+# Comprehensive COVID-19 Analytics Platform
 
-This project is a full-featured web application for analyzing COVID-19 data in the United States. The platform lets you interactively explore county-level data, build forecasts, uncover hidden patterns with machine learning, and detect wave-like trends in case dynamics.
+A full-featured web application for analyzing COVID-19 data across U.S. counties. Explore data interactively, build forecasts, cluster similar counties, and detect wave patterns in case dynamics.
 
-🚀 Key Features
+## 🚀 Key Features
 
-Interactive dashboard: A single Streamlit interface to access all analytics tools.
+- 𝗜𝗻𝘁𝗲𝗿𝗮𝗰𝘁𝗶𝘃𝗲 𝗱𝗮𝘀𝗵𝗯𝗼𝗮𝗿𝗱 (Streamlit)
+  - Single UI to access all analytics tools.
+- 𝗔𝗱𝘃𝗮𝗻𝗰𝗲𝗱 𝗮𝗻𝗮𝗹𝘆𝘁𝗶𝗰𝘀
+  - Time series forecasting with Prophet.
+  - County clustering using K-Means on socio-economic and health indicators.
+- 𝗣𝗮𝘁𝘁𝗲𝗿𝗻 𝗿𝗲𝗰𝗼𝗴𝗻𝗶𝘁𝗶𝗼𝗻
+  - Wave detection with Snowflake MATCH_RECOGNIZE.
+- 𝗣𝗲𝗿𝗳𝗼𝗿𝗺𝗮𝗻𝗰𝗲 𝗼𝗽𝘁𝗶𝗺𝗶𝘇𝗮𝘁𝗶𝗼𝗻
+  - Clustered tables in Snowflake and API-level caching.
+- 𝗦𝗰𝗮𝗹𝗮𝗯𝗹𝗲 𝗮𝗿𝗰𝗵𝗶𝘁𝗲𝗰𝘁𝘂𝗿𝗲
+  - Clear split: FastAPI backend + Streamlit frontend.
 
-Advanced analytics:
+## 🏛️ Architecture
 
-Time series forecasting using Prophet to predict future cases.
+Data Layer (Snowflake) 💾 ⟷ Backend / API (FastAPI) 🧠 ⟷ Frontend (Streamlit) 🖥️
 
-Cluster analysis with K-Means to segment counties by socio-economic and health indicators.
+- Data Layer (Snowflake): Optimized and clustered tables for fast queries.
+- Backend (FastAPI): Business logic, SQL, ML execution, REST API.
+- Presentation (Streamlit): Interactive UI fetching from API.
 
-Pattern recognition: Automatic detection of pandemic "waves" using Snowflake's MATCH_RECOGNIZE.
+## ⚙️ Getting Started
 
-Performance optimization: Fast responses thanks to clustered tables in Snowflake and API-level caching.
+### Prerequisites
 
-Scalable architecture: Clear separation of backend (FastAPI) and frontend (Streamlit) for reliability and easier development.
+- Python 3.8+
+- Virtual environment (venv or conda)
+- Snowflake account access
 
-🏛️ Architecture
+### Installation
 
-The project follows a three-tier architecture for clear separation of concerns and flexibility.
-
-Data Layer (Snowflake) 💾 <--> Backend / API (FastAPI) 🧠 <--> Frontend (Streamlit) 🖥️
-
-
-Data Layer (Snowflake): Stores optimized and clustered tables for fast access.
-
-Backend Layer (FastAPI): Encapsulates business logic: SQL execution, ML model runs, and data exposure via REST API.
-
-Presentation Layer (Streamlit): Interactive UI that fetches from the API and renders visualizations.
-
-⚙️ Getting Started
-
-Follow these steps to run the project locally.
-
-Prerequisites
-
-Python 3.8+
-
-Virtual environment (venv or conda)
-
-Access to a Snowflake account
-
-Installation and Run
-Clone the repository:
+```bash
 git clone [YOUR REPO URL]
 cd [YOUR PROJECT FOLDER]
 
-Create and activate a virtual environment:
 python -m venv .venv
-source .venv/bin/activate  # Windows: .venv\Scripts\activate
+# macOS/Linux
+source .venv/bin/activate
+# Windows
+# .venv\Scripts\activate
 
-Install dependencies:
 pip install -r requirements.txt
+```
 
-Set environment variables: Create a .env file in the project root with:
+Create a `.env` file in the project root:
+
+```
 SNOWFLAKE_USER=YOUR_USERNAME
 SNOWFLAKE_PASSWORD=YOUR_PASSWORD
 SNOWFLAKE_ACCOUNT=YOUR_SNOWFLAKE_ACCOUNT
 SNOWFLAKE_WAREHOUSE=COMPUTE_WH
 SNOWFLAKE_DATABASE=COVID_DB
 SNOWFLAKE_SCHEMA=PUBLIC
+```
 
+Ensure Snowflake has these optimized tables prepared:
+- NYT_US_COVID19_OPTIMIZED
+- COUNTY_RANKED_MEASURE_DATA_2020_OPTIMIZED
 
-Prepare the database in Snowflake: Make sure you have created the optimized tables NYT_US_COVID19_OPTIMIZED and COUNTY_RANKED_MEASURE_DATA_2020_OPTIMIZED with clustering configured.
+### Run
 
-Start the application (in two terminals):
+In two terminals:
 
-Terminal 1 — Start the API server:
-
+Terminal 1 — API:
+```bash
 uvicorn main:app --reload
+# Server at http://127.0.0.1:8000
+```
 
-
-Terminal 2 — Start the Streamlit app:
-
+Terminal 2 — Frontend:
+```bash
 streamlit run streamlit_app.py
+# App at http://localhost:8501
+```
 
+## 📂 Project Structure
 
-The API server will be available at http://127.0.0.1:8000 and the Streamlit app will open in your browser at http://localhost:8501.
-
-📂 Project Structure
+```
 /
 ├── .venv/                  # Virtual environment
 ├── streamlit_app.py        # Streamlit frontend
 ├── main.py                 # FastAPI backend
-├── models.py               # Pydantic data models for the API
+├── models.py               # Pydantic data models
 ├── database.py             # Snowflake connection logic
 ├── requirements.txt        # Python dependencies
-└── .env                    # Secrets (do not commit)
+```
 
-🌐 API Endpoints
+## 🌐 API Endpoints
 
-The backend provides the following core endpoints:
+- GET `/api/v1/counties` — List all counties
+- GET `/api/v1/county/{fips}` — Detailed county profile
+- GET `/api/v1/county/{fips}/timeseries` — County COVID-19 time series
+- GET `/api/v1/county/{fips}/waves` — Detected pandemic “waves”
+- GET `/api/v1/county/{fips}/forecast` — 30-day case forecast
+- GET `/api/v1/clusters` — Cluster membership for each county
+- GET `/api/v1/clusters/profiles` — Average profiles per cluster
 
-GET /api/v1/counties: Returns a list of all counties.
+## 📌 Notes
 
-GET /api/v1/county/{fips}: Returns a detailed county profile.
-
-GET /api/v1/county/{fips}/timeseries: Returns the COVID-19 time series for a county.
-
-GET /api/v1/county/{fips}/waves: Detects and returns pandemic "waves".
-
-GET /api/v1/county/{fips}/forecast: Builds and returns a 30-day case forecast.
-
-GET /api/v1/clusters: Performs clustering and returns each county's cluster membership.
-
-GET /api/v1/clusters/profiles: Returns average profiles for each cluster.
-
-🔧 Technologies Used
-
-Backend: FastAPI, Python
-
-Frontend: Streamlit
-
-Database: Snowflake
-
-Machine Learning: Prophet (forecasting), scikit-learn (clustering)
-
-Data Processing: pandas, numpy
-
-Visualization: Plotly
-
-📊 Features Overview
-County Profiles
-
-Get comprehensive information about any US county including population, COVID-19 statistics, and socio-economic indicators.
-
-Time Series Analysis
-
-View historical trends and detect patterns in case data over time.
-
-Wave Detection
-
-Automatically identify periods of sustained growth and decline in cases using advanced pattern matching.
-
-Forecasting
-
-Generate 30-day predictions for new cases using Facebook's Prophet algorithm.
-
-Cluster Analysis
-
-Discover groups of similar counties based on health outcomes and demographic factors.
+- Wave detection uses Snowflake’s MATCH_RECOGNIZE to identify sustained rises and falls.
+- Forecasting uses Prophet; ensure the environment has the proper dependencies.
+- Caching is applied at the API and Streamlit levels to improve responsiveness.
